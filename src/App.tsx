@@ -1,17 +1,28 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
+  Activity,
   ArrowUpRight,
   Award,
   BriefcaseBusiness,
+  Crosshair,
   ExternalLink,
   GitBranch,
   GraduationCap,
+  Lightbulb,
+  type LucideIcon,
   Mail,
   MapPin,
+  Menu,
   Newspaper,
+  Sun,
+  Wind,
+  X,
 } from "lucide-react";
-import profilePhoto from "../Pas Foto 4x6.jpg.jpeg";
+import LiveScan from "./LiveScan";
 import "./style.css";
+
+const profilePhotoUrl = `${import.meta.env.BASE_URL}profile-photo.jpg`;
 
 type Project = {
   id: string;
@@ -24,6 +35,7 @@ type Project = {
   impact: string;
   stack: string[];
   highlights: string[];
+  icon: LucideIcon;
 };
 
 type TimelineItem = {
@@ -54,6 +66,15 @@ const profile = {
   scholar: "https://scholar.google.com/citations?user=wfTpQXgAAAAJ&hl=en",
   github: "https://github.com/rizalfanex",
 };
+
+const navItems = [
+  { href: "#live-scan", label: "Live Scan" },
+  { href: "#work", label: "Profile" },
+  { href: "#case-study", label: "Field Cases" },
+  { href: "#timeline", label: "Trajectory" },
+  { href: "#proof", label: "Field Log" },
+  { href: "#skills", label: "Capability" },
+];
 
 const profileLinks = [
   {
@@ -104,6 +125,7 @@ const projects: Project[] = [
     title: "AIoT-Based Wildlife Detection and Deterrence System",
     label: "Computer Vision · AIoT · Field Deployment",
     period: "Jan 2026 — Present",
+    icon: Crosshair,
     oneLine:
       "An AI-based monitoring system for detecting monkeys and triggering automated deterrence in tourism areas.",
     problem:
@@ -124,6 +146,7 @@ const projects: Project[] = [
     title: "Automated Lighting Control System for Campus Buildings",
     label: "IoT · Sensor Systems · Energy Efficiency",
     period: "Jul 2024 — Mar 2025",
+    icon: Lightbulb,
     oneLine:
       "A large-scale sensor-based automation system for intelligent lighting control across campus buildings.",
     problem:
@@ -144,6 +167,7 @@ const projects: Project[] = [
     title: "HEPIX Smart Air Filtration System",
     label: "IoT · Indoor Air Quality · Funded Innovation",
     period: "2023 — 2024",
+    icon: Wind,
     oneLine:
       "A biomimetic IoT air-filtration system for reducing indoor pollutants with automated control and Google Assistant integration.",
     problem:
@@ -164,6 +188,7 @@ const projects: Project[] = [
     title: "IoT-Based Power Factor Monitoring and Optimization System",
     label: "IoT · Energy Monitoring · Publication",
     period: "Jan 2024 — Mar 2024",
+    icon: Activity,
     oneLine:
       "A real-time electrical monitoring system for power factor tracking and optimization using IoT.",
     problem:
@@ -184,6 +209,7 @@ const projects: Project[] = [
     title: "Portable Solar Power System 150W",
     label: "Renewable Energy · Hardware Architecture",
     period: "Jun 2024 — Aug 2024",
+    icon: Sun,
     oneLine:
       "A portable off-grid solar power system for practical learning and small-scale energy applications.",
     problem:
@@ -290,8 +316,7 @@ const recognition = [
 
 const mediaCoverage: MediaItem[] = [
   {
-    title:
-      "Best Graduate of FPTI UPI Graduation Period II with GPA 3.96",
+    title: "Best Graduate of FPTI UPI Graduation Period II with GPA 3.96",
     source: "FPTI UPI",
     date: "20 Jun 2025",
     tag: "Best Graduate",
@@ -300,8 +325,7 @@ const mediaCoverage: MediaItem[] = [
       "Faculty profile recognizing academic excellence, research activity, IoT innovation, publications, HKI, PKM achievements, and international presentation experience.",
   },
   {
-    title:
-      "PLTS Off-Grid as Zero-Carbon Electricity for Community Education",
+    title: "PLTS Off-Grid as Zero-Carbon Electricity for Community Education",
     source: "Kabar UPI",
     date: "15 Aug 2024",
     tag: "Solar · IoT",
@@ -310,8 +334,7 @@ const mediaCoverage: MediaItem[] = [
       "Named as student coordinator for off-grid solar, inverter, and IoT automation outreach in Bandung.",
   },
   {
-    title:
-      "HEPIX Smart Air Filtration for Indoor Pollution Reduction",
+    title: "HEPIX Smart Air Filtration for Indoor Pollution Reduction",
     source: "Kabar UPI",
     date: "01 Aug 2024",
     tag: "IoT · Air Quality",
@@ -330,8 +353,7 @@ const mediaCoverage: MediaItem[] = [
       "UPI teams presented AI-related work in a hybrid workshop hosted by RMUTT Thailand with participants from nine countries.",
   },
   {
-    title:
-      "Inverter and AC Smart Home Powered by Solar Panel Electricity",
+    title: "Inverter and AC Smart Home Powered by Solar Panel Electricity",
     source: "Kabar UPI",
     date: "15 Nov 2023",
     tag: "Solar · Embedded",
@@ -340,8 +362,7 @@ const mediaCoverage: MediaItem[] = [
       "Recognized as student coordinator with IoT capability in a solar-powered inverter and smart-home outreach project.",
   },
   {
-    title:
-      "Energy Saving Practice, Capacitor Bank Training, and Grounding Safety",
+    title: "Energy Saving Practice, Capacitor Bank Training, and Grounding Safety",
     source: "FPTI UPI",
     date: "21 Aug 2024",
     tag: "Electrical · Community",
@@ -350,8 +371,7 @@ const mediaCoverage: MediaItem[] = [
       "Community engineering program focused on energy efficiency, capacitor bank practice, and electrical safety.",
   },
   {
-    title:
-      "HEPIX for Indoor Air Pollution Control",
+    title: "HEPIX for Indoor Air Pollution Control",
     source: "FPTI UPI",
     date: "01 Aug 2024",
     tag: "IoT · Innovation",
@@ -360,8 +380,7 @@ const mediaCoverage: MediaItem[] = [
       "Faculty coverage highlighting HEPIX, Google Assistant control, and reported indoor pollutant reduction.",
   },
   {
-    title:
-      "Virtual Reality-Based Electromagnetic Field Learning at SMAN 6 Cirebon",
+    title: "Virtual Reality-Based Electromagnetic Field Learning at SMAN 6 Cirebon",
     source: "SMAN 6 Cirebon",
     date: "23 Jan 2024",
     tag: "VR · Education",
@@ -370,8 +389,7 @@ const mediaCoverage: MediaItem[] = [
       "Public school implementation of VR-based learning for electromagnetic field education.",
   },
   {
-    title:
-      "PKM Funding for IoT-Based Healthy Breathing Innovation",
+    title: "PKM Funding for IoT-Based Healthy Breathing Innovation",
     source: "FPTI UPI",
     date: "03 Jul 2023",
     tag: "PKM · Funding",
@@ -401,11 +419,25 @@ function SectionHeader({
 
 function App() {
   const [activeProjectId, setActiveProjectId] = useState(projects[0].id);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeProjectId) ?? projects[0],
     [activeProjectId]
   );
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   return (
     <main className="app">
@@ -414,19 +446,84 @@ function App() {
           MRF
         </a>
 
-        <nav aria-label="Primary navigation">
-          <a href="#work">Work</a>
-          <a href="#case-study">Case Study</a>
-          <a href="#timeline">Timeline</a>
-          <a href="#proof">Proof</a>
-          <a href="#skills">Skills</a>
+        <nav className="nav-desktop" aria-label="Primary navigation">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
         </nav>
 
         <a className="nav-button" href={`mailto:${profile.email}`}>
           <Mail size={16} aria-hidden="true" />
           Contact
         </a>
+
+        <button
+          type="button"
+          className="nav-toggle"
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu size={20} aria-hidden="true" />
+        </button>
       </header>
+
+      <AnimatePresence>
+        {menuOpen ? (
+          <motion.div
+            id="mobile-menu"
+            className="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          >
+            <div className="mobile-menu-top">
+              <span className="mono">NAVIGATION</span>
+              <button
+                type="button"
+                className="nav-toggle"
+                aria-label="Close menu"
+                onClick={() => setMenuOpen(false)}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <nav aria-label="Mobile navigation">
+              {navItems.map((item, index) => (
+                <motion.a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.04 * index + 0.05 }}
+                >
+                  <span className="mono">{String(index + 1).padStart(2, "0")}</span>
+                  {item.label}
+                  <ArrowUpRight size={18} aria-hidden="true" />
+                </motion.a>
+              ))}
+            </nav>
+
+            <a
+              className="mobile-menu-contact"
+              href={`mailto:${profile.email}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              <Mail size={18} aria-hidden="true" />
+              {profile.email}
+            </a>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <section id="top" className="hero">
         <div className="hero-copy">
@@ -442,9 +539,9 @@ function App() {
           <p>{profile.summary}</p>
 
           <div className="hero-actions">
-            <a href={`mailto:${profile.email}`} className="primary-button">
-              <Mail size={18} aria-hidden="true" />
-              Contact for Opportunities
+            <a href="#live-scan" className="primary-button">
+              <Crosshair size={18} aria-hidden="true" />
+              Run the live demo
             </a>
             <a href="#case-study" className="secondary-button">
               View Case Studies
@@ -478,7 +575,7 @@ function App() {
 
         <aside className="hero-visual" aria-label="Profile snapshot">
           <div className="profile-photo-shell">
-            <img src={profilePhoto} alt="Mochamad Rizal Fauzan formal portrait" />
+            <img src={profilePhotoUrl} alt="Mochamad Rizal Fauzan formal portrait" />
           </div>
 
           <div className="profile-card">
@@ -502,6 +599,8 @@ function App() {
         </aside>
       </section>
 
+      <LiveScan />
+
       <section className="metrics" aria-label="Career metrics">
         {metrics.map(([value, label]) => (
           <article key={label}>
@@ -513,7 +612,7 @@ function App() {
 
       <section id="work" className="section">
         <SectionHeader
-          eyebrow="Professional Positioning"
+          eyebrow="Operating Profile"
           title="Applied AI profile with real engineering depth."
           description="Built for recruiters who need to quickly see academic strength, applied systems capability, measurable impact, and technical ownership."
         />
@@ -550,30 +649,37 @@ function App() {
 
       <section id="case-study" className="section case-section">
         <SectionHeader
-          eyebrow="Selected Work"
+          eyebrow="Field Cases"
           title="Projects I built, tested, and brought into real settings."
           description="Pick a project to see what I worked on, how I approached the build, and what came out of it."
         />
 
         <div className="case-layout">
           <div className="project-list">
-            {projects.map((project) => (
-              <button
-                type="button"
-                key={project.id}
-                className={`project-selector ${
-                  activeProject.id === project.id ? "active" : ""
-                }`}
-                onMouseEnter={() => setActiveProjectId(project.id)}
-                onFocus={() => setActiveProjectId(project.id)}
-                onClick={() => setActiveProjectId(project.id)}
-                aria-pressed={activeProject.id === project.id}
-              >
-                <span>{project.label}</span>
-                <strong>{project.title}</strong>
-                <p>{project.oneLine}</p>
-              </button>
-            ))}
+            {projects.map((project) => {
+              const Icon = project.icon;
+
+              return (
+                <button
+                  type="button"
+                  key={project.id}
+                  className={`project-selector ${
+                    activeProject.id === project.id ? "active" : ""
+                  }`}
+                  onMouseEnter={() => setActiveProjectId(project.id)}
+                  onFocus={() => setActiveProjectId(project.id)}
+                  onClick={() => setActiveProjectId(project.id)}
+                  aria-pressed={activeProject.id === project.id}
+                >
+                  <span className="project-selector-label">
+                    <Icon size={15} aria-hidden="true" />
+                    {project.label}
+                  </span>
+                  <strong>{project.title}</strong>
+                  <p>{project.oneLine}</p>
+                </button>
+              );
+            })}
           </div>
 
           <article className="case-panel">
@@ -619,7 +725,7 @@ function App() {
 
       <section id="timeline" className="section">
         <SectionHeader
-          eyebrow="Timeline"
+          eyebrow="Trajectory"
           title="A visual path across AI research, engineering, and academic excellence."
         />
 
@@ -642,7 +748,7 @@ function App() {
 
       <section id="proof" className="section proof-section">
         <SectionHeader
-          eyebrow="Verified Proof"
+          eyebrow="Field Log"
           title="Public coverage that backs the engineering story."
           description="Recruiters can verify projects, funding, outreach, and international activity through external university and school publications."
         />
@@ -676,14 +782,17 @@ function App() {
                 rel="noreferrer"
               >
                 <div className="media-card-top">
-                  <span>{item.tag}</span>
+                  <span className="media-ref mono">
+                    LOG-{String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="media-tag">{item.tag}</span>
                   <ExternalLink size={16} aria-hidden="true" />
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.summary}</p>
                 <div className="media-meta">
                   <strong>{item.source}</strong>
-                  <span>{item.date}</span>
+                  <span className="mono">{item.date}</span>
                 </div>
               </a>
             ))}
@@ -693,7 +802,7 @@ function App() {
 
       <section id="skills" className="section">
         <SectionHeader
-          eyebrow="Technical Stack"
+          eyebrow="Capability Matrix"
           title="Balanced across AI, software, embedded systems, and electrical engineering."
         />
 
@@ -713,7 +822,7 @@ function App() {
 
       <section className="section recognition">
         <SectionHeader
-          eyebrow="Recognition"
+          eyebrow="Commendations"
           title="Awards, certifications, and academic activities."
         />
 
