@@ -19,5 +19,5 @@ function getBasePath() {
 
 export default defineConfig({
   plugins: [react()],
-  base: getBasePath(),
+  base: "/",
 });
